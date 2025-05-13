@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>  
 <html>
 <head>
   <style>
@@ -10,7 +10,7 @@
 
     body, html {
       height: 100%;
-      background-color: red;
+      background-color: blue;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -40,6 +40,7 @@
       font-weight: bold;
       margin-bottom: 10px;
       text-align: center;
+      height: 30px;
     }
 
     .scroll-text {
@@ -56,7 +57,7 @@
         top: 100%;
       }
       100% {
-        top: -100%;
+        top: -150%;
       }
     }
 
@@ -72,17 +73,31 @@
       color: #333;
       background-color: #fff;
     }
+
+    .scroll-footer {
+      margin-top: 0px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffffff;
+      background-color: transparent;
+      height: 10px;
+      line-height: 0px;
+      text-align: center;
+    }
+
   </style>
 </head>
 <body>
 
-  <div class="scroll-heading">R T D A S </div>
+  <div class="scroll-heading">പുഴയിലെ  ജലനിരപ്പ് </div>
   
   <div class="scroll-container">
     <div class="scroll-text">
       <table id="dataTable"></table>
     </div>
   </div>
+
+  <div id="footer" class="scroll-footer">Date</div>
 
   <script>
     async function fetchData() {
@@ -94,9 +109,25 @@
         const jsonData = JSON.parse(text);
         
         const table = document.getElementById("dataTable");
+        const footer = document.getElementById("footer");
+
         table.innerHTML = ""; // Clear previous data
 
-        jsonData.result.slice(55, 65).forEach(item => {
+        // Format A1 value as dd/mm/yyyy
+        const a1Value = jsonData.result[0];
+        const date = new Date(a1Value);
+
+        if (!isNaN(date)) {
+          const formattedDate = String(date.getDate()).padStart(2, '0') + '/' +
+                                String(date.getMonth() + 1).padStart(2, '0') + '/' +
+                                date.getFullYear();
+          footer.textContent = formattedDate;
+        } else {
+          footer.textContent = "Invalid date";
+        }
+
+        // Populate table with data (rows 17–30)
+        jsonData.result.slice(17, 30).forEach(item => {
           const row = document.createElement("tr");
           const cell = document.createElement("td");
           cell.textContent = item;
@@ -105,11 +136,12 @@
         });
       } catch (err) {
         console.error("Failed to fetch data:", err);
+        document.getElementById("footer").textContent = "Error loading footer";
       }
     }
 
     fetchData();
-    setInterval(fetchData, 120000);
+    setInterval(fetchData, 120000); // Refresh every 2 minutes
   </script>
 
 </body>

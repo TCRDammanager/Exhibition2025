@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>കേരള ജലവിഭവ വകുപ്പ് വകുപ്പ് തൃശ്ശൂർ ജില്ല</title>
+  <title>കേരള ജലസേചന വകുപ്പ് തൃശ്ശൂർ ജില്ല</title>
   <style>
     * {
       margin: 0;
@@ -43,6 +43,8 @@
       background-color: #333;
       color: white;
       font-size: 18px;
+      text-align: center;
+      padding: 5px;
     }
 
     .main {
@@ -75,6 +77,12 @@
       box-shadow: none;
       border-radius: 0;
       background-color: white;
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;     /* Firefox */
+    }
+
+    .right-box::-webkit-scrollbar {
+      display: none;             /* Chrome, Safari, Opera */
     }
 
     iframe {
@@ -82,6 +90,13 @@
       height: 100%;
       border: none;
       background-color: white;
+      overflow: hidden;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    iframe::-webkit-scrollbar {
+      display: none;
     }
   </style>
 
@@ -112,23 +127,23 @@
 <body>
 
   <header>
-    കേരള ജലസേചന വകുപ്പ് തൃശ്ശൂർ ജില്ല
+    കേരള ജലവിഭവ  വകുപ്പ്  -  തൃശ്ശൂർ ജില്ല
   </header>
 
   <div class="main">
     <div class="left-box">
-      <iframe src="eVIDEO.html"></iframe>
+      <iframe src="eVIDEO.html" scrolling="no"></iframe>
     </div>
 
     <div class="right-column">
       <div class="right-box">
-        <iframe id="rotating-frame" src="Table1.html"></iframe>
+        <iframe id="rotating-frame" src="Table1.html" scrolling="no"></iframe>
       </div>
     </div>
   </div>
 
   <footer>
-  Kerala State LDF Governments fourth anniversary  Celebrations of Thrissur District on  14 May 2025 to 18 May 2025 . 
+   Kerala State LDF Government fourth anniversary Celebrations of Thrissur District on 14 May 2025 to 18 May 2025 .
   </footer>
 
 </body>
