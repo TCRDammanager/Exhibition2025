@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,7 +14,7 @@
       height: 100%;
       width: 100%;
       font-family: Arial, sans-serif;
-      background-color: white;
+      background-color: #173F07;
       overflow: hidden;
     }
 
@@ -24,7 +24,7 @@
     }
 
     header, footer {
-      height: 5%;
+      
       width: 100%;
       display: flex;
       align-items: center;
@@ -33,13 +33,15 @@
     }
 
     header {
-      background-color: #00008B;
+      height: 7%;
+      background-color: #E20404;
       color: yellow;
-      font-size: 20px;
+      font-size: 21px;
       font-weight: bold;
     }
 
     footer {
+      height: 4%;
       background-color: #333;
       color: white;
       font-size: 18px;
@@ -50,12 +52,12 @@
     .main {
       flex: 1;
       display: flex;
-      padding: 20px;
-      gap: 20px;
+      padding: 10px;
+      gap: 10px;
     }
 
     .left-box {
-      width: 70%;
+      width: 67%;
       height: 100%;
       background-color: white;
       border: 2px solid #ccc;
@@ -73,7 +75,7 @@
     }
 
     .right-column {
-      width: 30%;
+      width: 33%;
       display: flex;
       flex-direction: column;
     }
@@ -104,28 +106,23 @@
     window.onload = function () {
       const rightFrame = document.getElementById("rightFrame");
 
+      // Define pages with individual durations (in seconds)
       const pages = [
-        "Table1.html",
-        "Table2.html",
-        "Table3.html",
-        "Table4.html",
-        "Table5.html",
-        "Table6.html",
-        "Table7.html",
-        "Table8.html",
-        "Table9.html"
+        { src: "Table1.html", duration: 139 },
+        { src: "Table2.html", duration: 130 }
       ];
 
       let index = 0;
 
       function rotateFrame() {
-        rightFrame.src = pages[index];
+        const current = pages[index];
+        rightFrame.src = current.src;
+
         index = (index + 1) % pages.length;
-        setTimeout(rotateFrame, 30000);  // switch every 25 seconds
+        setTimeout(rotateFrame, current.duration * 1000); // Convert seconds to milliseconds
       }
 
-      // Start rotation
-      rotateFrame();
+      rotateFrame(); // Start rotation
     };
   </script>
 </head>
@@ -148,7 +145,7 @@
   </div>
 
   <footer>
-    Kerala State LDF Government fourth anniversary Celebrations of Thrissur District on 14 May 2025 to 18 May 2025.
+    Kerala State Government fourth anniversary Celebrations . Thrissur District . on 18 May 2025 to 24 May 2025.
   </footer>
 
 </body>

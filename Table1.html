@@ -2,7 +2,7 @@
 <html lang="ml">
 <head>
   <meta charset="UTF-8">
-  <title>റിസർവോയർ ജലവിതാനം</title>
+  <title>റിസർവോയർ ജലവിതാനം MSL</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@
     }
 
     .scroll-heading {
-      background-color: #004d99;
+      background-color: #0268b6;
       color: white;
       padding: 5px;
       text-align: center;
@@ -29,7 +29,7 @@
     }
 
     .scroll-container {
-      width: 400px;
+      width: 420px;
       margin: 0 auto;
       border: 1px solid #ccc;
       background: rgba(255, 255, 255, 0.9);
@@ -94,21 +94,21 @@
     }
 
     .scroll-footer {
-      background-color: #f1f1f1;
+      background-color: #8B080A;
       padding: 1px;
       text-align: center;
-      font-size: 14px;
+      font-size: 22px;
       font-weight: bold;
+      color: white;
     }
   </style>
 </head>
 <body>
 
-  <div class="page-header">റിസർവോയർ ജലവിതാനം</div>
+  <div class="page-header">റിസർവോയർ ജലവിതാനം MSL</div>
   <div id="heading" class="scroll-heading"></div>
 
   <div class="scroll-container">
-    <!-- Background Table -->
     <div class="background-table">
       <table>
         <thead id="bgTableHeader"></thead>
@@ -116,7 +116,6 @@
       </table>
     </div>
 
-    <!-- Foreground Header Table -->
     <table>
       <colgroup>
         <col style="width: 80%;">
@@ -126,7 +125,6 @@
       <thead id="tableHeader"></thead>
     </table>
 
-    <!-- Scrollable Body Table -->
     <div class="table-wrapper">
       <div id="scrollContent" class="scrolling-body">
         <table>
@@ -144,26 +142,27 @@
   <div id="footer" class="scroll-footer">Date</div>
 
   <script>
+    const groups = [
+      { headerRow: 69, rowsStart: 72, rowsCount: 7 },
+      { headerRow: 89, rowsStart: 92, rowsCount: 7 },
+      { headerRow: 109, rowsStart: 112, rowsCount: 7 },
+      { headerRow: 129, rowsStart: 132, rowsCount: 7 },
+      { headerRow: 149, rowsStart: 152, rowsCount: 7 },
+      { headerRow: 169, rowsStart: 172, rowsCount: 7 },
+      { headerRow: 189, rowsStart: 192, rowsCount: 2 }
+    ];
+
+    let data = [];
+    let currentGroup = 0;
+
     async function fetchData() {
       const url = "https://script.google.com/macros/s/AKfycbwAVdup8vA9azugUebxVy9YQ2BPde9LHodACwcWMYCAkklETpzQ_nIIEui9jBtAgFS3zQ/exec";
-
       try {
         const response = await fetch(url);
-        const text = await response.text();
-        const jsonData = JSON.parse(text);
-        const data = jsonData.value;
+        const jsonData = await response.json();
+        data = jsonData.value || [];
 
-        const heading = document.getElementById("heading");
         const footer = document.getElementById("footer");
-        const tableHeader = document.getElementById("tableHeader");
-        const tableBody = document.getElementById("tableBody");
-        const bgTableHeader = document.getElementById("bgTableHeader");
-        const bgTableBody = document.getElementById("bgTableBody");
-
-        // Header from A70
-        heading.textContent = data[69]?.[0] || "Header unavailable";
-
-        // Footer date from A1
         const a1Value = data[0][0];
         const date = new Date(a1Value);
         footer.textContent = !isNaN(date)
@@ -172,62 +171,7 @@
             date.getFullYear()
           : a1Value || "Invalid Date";
 
-        // Table header from A71
-        const headerRow = data[70] || [];
-        tableHeader.innerHTML = "";
-        bgTableHeader.innerHTML = "";
-        const trHeader = document.createElement("tr");
-        const trHeaderBg = document.createElement("tr");
-
-        headerRow.forEach(cell => {
-          const th = document.createElement("th");
-          th.textContent = cell || '';
-          trHeader.appendChild(th);
-
-          const thBg = document.createElement("th");
-          thBg.textContent = cell || '';
-          trHeaderBg.appendChild(thBg);
-        });
-
-        tableHeader.appendChild(trHeader);
-        bgTableHeader.appendChild(trHeaderBg);
-
-        // Table body from A72–A82
-        const rows = data.slice(71, 82);
-        tableBody.innerHTML = "";
-        bgTableBody.innerHTML = "";
-
-        rows.forEach((row, index) => {
-          const tr = document.createElement("tr");
-          const trBg = document.createElement("tr");
-
-          row.forEach(cell => {
-            const td = document.createElement("td");
-            td.textContent = cell || '';
-            if (index === 5) {
-              td.style.color = "red";
-              td.style.fontWeight = "bold";
-            }
-            tr.appendChild(td);
-
-            const tdBg = document.createElement("td");
-            tdBg.textContent = cell || '';
-            if (index === 5) {
-              tdBg.style.color = "red";
-              tdBg.style.fontWeight = "bold";
-            }
-            trBg.appendChild(tdBg);
-          });
-
-          tableBody.appendChild(tr);
-          bgTableBody.appendChild(trBg);
-        });
-
-        // Adjust animation duration dynamically
-        const scrollContent = document.getElementById("scrollContent");
-        const duration = rows.length * 3; // 3 seconds per row
-        scrollContent.style.animationDuration = `${duration}s`;
-
+        showGroup(currentGroup);
       } catch (error) {
         console.error("Error fetching data:", error);
         document.getElementById("footer").textContent = "Error loading data";
@@ -235,8 +179,91 @@
       }
     }
 
+    function showGroup(index) {
+      if (index >= groups.length) return; // Stop after last group
+
+      const heading = document.getElementById("heading");
+      const tableHeader = document.getElementById("tableHeader");
+      const tableBody = document.getElementById("tableBody");
+      const bgTableHeader = document.getElementById("bgTableHeader");
+      const bgTableBody = document.getElementById("bgTableBody");
+      const scrollContent = document.getElementById("scrollContent");
+
+      const group = groups[index];
+      const headerRowIndex = group.headerRow;
+      const rowsStart = group.rowsStart;
+      const rowsCount = group.rowsCount;
+
+      heading.textContent = data[headerRowIndex]?.[0] || "Header unavailable";
+
+      const headerRow = data[headerRowIndex + 1] || [];
+      tableHeader.innerHTML = "";
+      bgTableHeader.innerHTML = "";
+
+      const trHeader = document.createElement("tr");
+      const trHeaderBg = document.createElement("tr");
+
+      headerRow.forEach(cell => {
+        const th = document.createElement("th");
+        th.textContent = cell || '';
+        trHeader.appendChild(th);
+
+        const thBg = document.createElement("th");
+        thBg.textContent = cell || '';
+        trHeaderBg.appendChild(thBg);
+      });
+
+      tableHeader.appendChild(trHeader);
+      bgTableHeader.appendChild(trHeaderBg);
+
+      const rows = data.slice(rowsStart, rowsStart + rowsCount);
+      tableBody.innerHTML = "";
+      bgTableBody.innerHTML = "";
+
+      rows.forEach((row, i) => {
+        const tr = document.createElement("tr");
+        const trBg = document.createElement("tr");
+
+        row.forEach(cell => {
+          const td = document.createElement("td");
+          const tdBg = document.createElement("td");
+          td.textContent = cell || '';
+          tdBg.textContent = cell || '';
+
+          if (i === 3) {
+            td.style.color = "red";
+            td.style.fontWeight = "bold";
+            tdBg.style.color = "red";
+            tdBg.style.fontWeight = "bold";
+          } else if (i === 4) {
+            td.style.color = "blue";
+            td.style.fontWeight = "bold";
+            tdBg.style.color = "blue";
+            tdBg.style.fontWeight = "bold";
+          }
+
+          tr.appendChild(td);
+          trBg.appendChild(tdBg);
+        });
+
+        tableBody.appendChild(tr);
+        bgTableBody.appendChild(trBg);
+      });
+
+      // Trigger animation
+      scrollContent.style.animation = "none";
+      void scrollContent.offsetWidth;
+      const duration = rowsCount * 3;
+      scrollContent.style.animation = `scrollUp ${duration}s linear forwards`;
+
+      // Proceed to next group after animation completes
+      setTimeout(() => {
+        currentGroup++;
+        showGroup(currentGroup); // stop naturally after last group
+      }, duration * 1000 + 500);
+    }
+
     fetchData();
-    setInterval(fetchData, 120000); // every 2 minutes
   </script>
 
 </body>
