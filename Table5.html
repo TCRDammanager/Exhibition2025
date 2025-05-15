@@ -160,8 +160,8 @@
         const bgTableHeader = document.getElementById("bgTableHeader");
         const bgTableBody = document.getElementById("bgTableBody");
 
-        // Header from A130
-        heading.textContent = data[129]?.[0] || "Header unavailable";
+        // Header from A150
+        heading.textContent = data[149]?.[0] || "Header unavailable";
 
         // Footer date from A1
         const a1Value = data[0][0];
@@ -172,8 +172,8 @@
             date.getFullYear()
           : a1Value || "Invalid Date";
 
-        // Table header from A131
-        const headerRow = data[130] || [];
+        // Table header from A151
+        const headerRow = data[150] || [];
         tableHeader.innerHTML = "";
         bgTableHeader.innerHTML = "";
         const trHeader = document.createElement("tr");
@@ -192,8 +192,8 @@
         tableHeader.appendChild(trHeader);
         bgTableHeader.appendChild(trHeaderBg);
 
-        // Table body from A132–A140
-        const rows = data.slice(131, 140);
+        // Table body from A152–A160
+        const rows = data.slice(151, 160);
         tableBody.innerHTML = "";
         bgTableBody.innerHTML = "";
 

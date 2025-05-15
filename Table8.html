@@ -2,7 +2,7 @@
 <html lang="ml">
 <head>
   <meta charset="UTF-8">
-  <title>റിസർവോയർ ജലവിതാനം</title>
+  <title>പുഴയിലെ  ജലനിരപ്പ്</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
     }
 
     .page-header {
-      background-color: #003366;
+      background-color: #946a04;
       color: white;
       text-align: center;
       padding: 5px;
@@ -20,7 +20,7 @@
     }
 
     .scroll-heading {
-      background-color: #004d99;
+      background-color: #057cca;
       color: white;
       padding: 5px;
       text-align: center;
@@ -104,7 +104,7 @@
 </head>
 <body>
 
-  <div class="page-header">റിസർവോയർ ജലവിതാനം</div>
+  <div class="page-header">പുഴയിലെ  ജലനിരപ്പ്</div>
   <div id="heading" class="scroll-heading"></div>
 
   <div class="scroll-container">
@@ -160,8 +160,8 @@
         const bgTableHeader = document.getElementById("bgTableHeader");
         const bgTableBody = document.getElementById("bgTableBody");
 
-        // Header from A130
-        heading.textContent = data[129]?.[0] || "Header unavailable";
+        // Header from A200
+        heading.textContent = data[199]?.[0] || "Header unavailable";
 
         // Footer date from A1
         const a1Value = data[0][0];
@@ -172,8 +172,8 @@
             date.getFullYear()
           : a1Value || "Invalid Date";
 
-        // Table header from A131
-        const headerRow = data[130] || [];
+        // Table header from A191
+        const headerRow = data[190] || [];
         tableHeader.innerHTML = "";
         bgTableHeader.innerHTML = "";
         const trHeader = document.createElement("tr");
@@ -192,8 +192,8 @@
         tableHeader.appendChild(trHeader);
         bgTableHeader.appendChild(trHeaderBg);
 
-        // Table body from A132–A140
-        const rows = data.slice(131, 140);
+        // Table body from A201–A1210
+        const rows = data.slice(200, 206);
         tableBody.innerHTML = "";
         bgTableBody.innerHTML = "";
 
@@ -225,7 +225,7 @@
 
         // Adjust animation duration dynamically
         const scrollContent = document.getElementById("scrollContent");
-        const duration = rows.length * 3; // 3 seconds per row
+        const duration = rows.length * 5; // 1 seconds per row
         scrollContent.style.animationDuration = `${duration}s`;
 
       } catch (error) {

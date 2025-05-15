@@ -160,8 +160,8 @@
         const bgTableHeader = document.getElementById("bgTableHeader");
         const bgTableBody = document.getElementById("bgTableBody");
 
-        // Header from A130
-        heading.textContent = data[129]?.[0] || "Header unavailable";
+        // Header from A190
+        heading.textContent = data[189]?.[0] || "Header unavailable";
 
         // Footer date from A1
         const a1Value = data[0][0];
@@ -172,8 +172,8 @@
             date.getFullYear()
           : a1Value || "Invalid Date";
 
-        // Table header from A131
-        const headerRow = data[130] || [];
+        // Table header from A191
+        const headerRow = data[190] || [];
         tableHeader.innerHTML = "";
         bgTableHeader.innerHTML = "";
         const trHeader = document.createElement("tr");
@@ -192,8 +192,8 @@
         tableHeader.appendChild(trHeader);
         bgTableHeader.appendChild(trHeaderBg);
 
-        // Table body from A132–A140
-        const rows = data.slice(131, 140);
+        // Table body from A192–A194
+        const rows = data.slice(191, 194);
         tableBody.innerHTML = "";
         bgTableBody.innerHTML = "";
 
@@ -204,7 +204,7 @@
           row.forEach(cell => {
             const td = document.createElement("td");
             td.textContent = cell || '';
-            if (index === 5) {
+            if (index === 2) {
               td.style.color = "red";
               td.style.fontWeight = "bold";
             }
@@ -212,7 +212,7 @@
 
             const tdBg = document.createElement("td");
             tdBg.textContent = cell || '';
-            if (index === 5) {
+            if (index === 2) {
               tdBg.style.color = "red";
               tdBg.style.fontWeight = "bold";
             }
@@ -225,7 +225,7 @@
 
         // Adjust animation duration dynamically
         const scrollContent = document.getElementById("scrollContent");
-        const duration = rows.length * 3; // 3 seconds per row
+        const duration = rows.length * 5; // 1 seconds per row
         scrollContent.style.animationDuration = `${duration}s`;
 
       } catch (error) {

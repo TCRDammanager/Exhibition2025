@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>കേരള ജലസേചന വകുപ്പ് തൃശ്ശൂർ ജില്ല</title>
   <style>
     * {
@@ -15,7 +15,6 @@
       width: 100%;
       font-family: Arial, sans-serif;
       background-color: white;
-      overflow: hidden;
     }
 
     body {
@@ -62,14 +61,6 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      position: relative;
-    }
-
-    .left-box iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
     }
 
     .right-column {
@@ -80,59 +71,86 @@
 
     .right-box {
       position: relative;
-      height: 100%;
+      height: 200%;
       overflow: hidden;
       background-color: white;
-      border: 2px solid #ccc;
-      border-radius: 12px;
     }
 
-    iframe#rightFrame {
+    .animated-iframe {
+      position: absolute;
       width: 100%;
       height: 100%;
       border: none;
-      overflow: hidden;
-      scrollbar-width: none;
+      transition: transform 1s ease, opacity 1s ease;
     }
 
-    iframe#rightFrame::-webkit-scrollbar {
-      display: none;
+    .hidden {
+      opacity: 0;
+      transform: translateY(100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .visible {
+      opacity: 1;
+      transform: translateY(0%);
+      z-index: 2;
     }
   </style>
 
   <script>
     window.onload = function () {
-      const rightFrame = document.getElementById("rightFrame");
+      const iframeA = document.getElementById("frameA");
+      const iframeB = document.getElementById("frameB");
 
       const pages = [
-        "Table1.html",
-        "Table2.html",
-        "Table3.html",
-        "Table4.html",
-        "Table5.html",
-        "Table6.html",
-        "Table7.html",
-        "Table8.html",
-        "Table9.html"
+        { url: "Table1.html", duration: 30000 },
+        { url: "Table2.html", duration: 30000 },
+        { url: "Table3.html", duration: 30000 },
+        { url: "Table4.html", duration: 30000 },
+	{ url: "Table5.html", duration: 30000 },
+	{ url: "Table6.html", duration: 30000 },
+	{ url: "Table7.html", duration: 30000 },
+	{ url: "Table8.html", duration: 30000 },
+	{ url: "Table9.html", duration: 30000 }
       ];
 
       let index = 0;
+      let currentFrame = iframeA;
+      let nextFrame = iframeB;
 
       function rotateFrame() {
-        rightFrame.src = pages[index];
+        nextFrame.src = pages[index].url;
+
+        // Show next frame with animation
+        nextFrame.classList.remove("hidden");
+        nextFrame.classList.add("visible");
+
+        // Hide current frame after delay
+        currentFrame.classList.remove("visible");
+        currentFrame.classList.add("hidden");
+
+        // Swap references
+        [currentFrame, nextFrame] = [nextFrame, currentFrame];
+
+        const duration = pages[index].duration;
         index = (index + 1) % pages.length;
-        setTimeout(rotateFrame, 30000);  // switch every 25 seconds
+        setTimeout(rotateFrame, duration);
       }
 
-      // Start rotation
-      rotateFrame();
+      // Initialize
+      currentFrame.src = pages[index].url;
+      currentFrame.classList.add("visible");
+      nextFrame.classList.add("hidden");
+      index = (index + 1) % pages.length;
+      setTimeout(rotateFrame, pages[0].duration);
     };
   </script>
 </head>
 <body>
 
   <header>
-    കേരള ജലവിഭവ വകുപ്പ് - തൃശ്ശൂർ ജില്ല
+    കേരള ജലവിഭവ  വകുപ്പ്  -  തൃശ്ശൂർ ജില്ല
   </header>
 
   <div class="main">
@@ -142,7 +160,8 @@
 
     <div class="right-column">
       <div class="right-box">
-        <iframe id="rightFrame" scrolling="no"></iframe>
+        <iframe id="frameA" class="animated-iframe" scrolling="no"></iframe>
+        <iframe id="frameB" class="animated-iframe" scrolling="no"></iframe>
       </div>
     </div>
   </div>
