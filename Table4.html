@@ -1,143 +1,99 @@
-<!DOCTYPE html>
-<html lang="ml">
+<!DOCTYPE html>  
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>റിസർവോയർ ജലവിതാനം</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
-    .page-header {
-      background-color: #003366;
-      color: white;
-      text-align: center;
-      padding: 5px;
-      font-size: 20px;
-      font-weight: bold;
+    body, html {
+      height: 100%;
+      background-color: red;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
     }
 
-    .scroll-heading {
-      background-color: #004d99;
-      color: white;
-      padding: 5px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
 
     .scroll-container {
-      width: 400px;
-      margin: 0 auto;
-      border: 1px solid #ccc;
-      background: rgba(255, 255, 255, 0.9);
-      box-sizing: border-box;
-      font-size: 20px;
-      font-weight: bold;
-      position: relative;
+      height: 600px;
+      width: 450px;
       overflow: hidden;
+      position: relative;
+      background: #f0f0f0;
+      border: 1px solid #ccc;
+      margin: 20px;
     }
 
-    .background-table {
+    .scroll-heading {
+      color: #fff;
+      font-size: 32px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+      height: 25px;
+    }
+
+    .scroll-text {
       position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
-      height : 450px;
-      opacity: 0;
-      z-index: 0;
-      pointer-events: none;
-      filter: blur(0.5px);
+      font-size: 32px;
+      color: blue;
+      font-weight: bold;
+      animation: scroll-up 25s linear infinite;
+    }
+
+    @keyframes scroll-up {
+      0% {
+        top: 100%;
+      }
+      100% {
+        top: -150%;
+      }
     }
 
     table {
-      border-collapse: collapse;
       width: 100%;
-    }
-
-    thead th {
-      background-color: #e0e0e0;
-      border: 1px solid #999;
-      padding: 8px;
-      text-align: left;
+      border-collapse: collapse;
     }
 
     td {
-      border: 1px solid #999;
-      padding: 8px;
-      text-align: left;
-      background-color: white;
-    }
-
-    .table-wrapper {
-      height: 450px;
-      overflow: hidden;
-      position: relative;
-      z-index: 1;
-    }
-
-    .scrolling-body {
-      display: inline-block;
-      transform: translateY(100%);
-      animation: scrollUp 30s linear forwards;
-    }
-
-    @keyframes scrollUp {
-      0% {
-        transform: translateY(100%);
-      }
-      100% {
-        transform: translateY(-100%);
-      }
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      font-size: 28px;
+      color: #333;
+      background-color: #fff;
     }
 
     .scroll-footer {
-      background-color: #f1f1f1;
-      padding: 1px;
-      text-align: center;
-      font-size: 14px;
+      margin-top: 0px;
+      font-size: 20px;
       font-weight: bold;
+      color: #ffffff;
+      background-color: transparent;
+      height: 10px;
+      line-height: 0px;
+      text-align: center;
     }
+
   </style>
 </head>
 <body>
 
-  <div class="page-header">റിസർവോയർ ജലവിതാനം</div>
-  <div id="heading" class="scroll-heading"></div>
-
+  <div class="scroll-heading">R T D A S </div>
+  
   <div class="scroll-container">
-    <!-- Background Table -->
-    <div class="background-table">
-      <table>
-        <thead id="bgTableHeader"></thead>
-        <tbody id="bgTableBody"></tbody>
-      </table>
-    </div>
-
-    <!-- Foreground Header Table -->
-    <table>
-      <colgroup>
-        <col style="width: 80%;">
-        <col style="width: 20%;">
-        <col style="width: 20%;">
-      </colgroup>
-      <thead id="tableHeader"></thead>
-    </table>
-
-    <!-- Scrollable Body Table -->
-    <div class="table-wrapper">
-      <div id="scrollContent" class="scrolling-body">
-        <table>
-          <colgroup>
-            <col style="width: 100%;">
-            <col style="width: 5%;">
-            <col style="width: 5%;">
-          </colgroup>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+    <div class="scroll-text">
+      <table id="dataTable"></table>
     </div>
   </div>
 
@@ -145,98 +101,47 @@
 
   <script>
     async function fetchData() {
-      const url = "https://script.google.com/macros/s/AKfycbwAVdup8vA9azugUebxVy9YQ2BPde9LHodACwcWMYCAkklETpzQ_nIIEui9jBtAgFS3zQ/exec";
-
+      const url = "https://script.google.com/macros/s/AKfycbyQ_oQUW9rtTk6X_5EVhf_cc5WyGi_y_lUxyAr9G-nS1i1_edGpAslHvzezei5M8V15LQ/exec";
+      
       try {
         const response = await fetch(url);
         const text = await response.text();
         const jsonData = JSON.parse(text);
-        const data = jsonData.value;
-
-        const heading = document.getElementById("heading");
+        
+        const table = document.getElementById("dataTable");
         const footer = document.getElementById("footer");
-        const tableHeader = document.getElementById("tableHeader");
-        const tableBody = document.getElementById("tableBody");
-        const bgTableHeader = document.getElementById("bgTableHeader");
-        const bgTableBody = document.getElementById("bgTableBody");
 
-        // Header from A130
-        heading.textContent = data[129]?.[0] || "Header unavailable";
+        table.innerHTML = ""; // Clear previous data
 
-        // Footer date from A1
-        const a1Value = data[0][0];
+        // Format A1 value as dd/mm/yyyy
+        const a1Value = jsonData.result[0];
         const date = new Date(a1Value);
-        footer.textContent = !isNaN(date)
-          ? String(date.getDate()).padStart(2, '0') + '/' +
-            String(date.getMonth() + 1).padStart(2, '0') + '/' +
-            date.getFullYear()
-          : a1Value || "Invalid Date";
 
-        // Table header from A131
-        const headerRow = data[130] || [];
-        tableHeader.innerHTML = "";
-        bgTableHeader.innerHTML = "";
-        const trHeader = document.createElement("tr");
-        const trHeaderBg = document.createElement("tr");
+        if (!isNaN(date)) {
+          const formattedDate = String(date.getDate()).padStart(2, '0') + '/' +
+                                String(date.getMonth() + 1).padStart(2, '0') + '/' +
+                                date.getFullYear();
+          footer.textContent = formattedDate;
+        } else {
+          footer.textContent = "Invalid date";
+        }
 
-        headerRow.forEach(cell => {
-          const th = document.createElement("th");
-          th.textContent = cell || '';
-          trHeader.appendChild(th);
-
-          const thBg = document.createElement("th");
-          thBg.textContent = cell || '';
-          trHeaderBg.appendChild(thBg);
+        // Populate table with data (rows 55–65)
+        jsonData.result.slice(55, 65).forEach(item => {
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.textContent = item;
+          row.appendChild(cell);
+          table.appendChild(row);
         });
-
-        tableHeader.appendChild(trHeader);
-        bgTableHeader.appendChild(trHeaderBg);
-
-        // Table body from A132–A140
-        const rows = data.slice(131, 140);
-        tableBody.innerHTML = "";
-        bgTableBody.innerHTML = "";
-
-        rows.forEach((row, index) => {
-          const tr = document.createElement("tr");
-          const trBg = document.createElement("tr");
-
-          row.forEach(cell => {
-            const td = document.createElement("td");
-            td.textContent = cell || '';
-            if (index === 5) {
-              td.style.color = "red";
-              td.style.fontWeight = "bold";
-            }
-            tr.appendChild(td);
-
-            const tdBg = document.createElement("td");
-            tdBg.textContent = cell || '';
-            if (index === 5) {
-              tdBg.style.color = "red";
-              tdBg.style.fontWeight = "bold";
-            }
-            trBg.appendChild(tdBg);
-          });
-
-          tableBody.appendChild(tr);
-          bgTableBody.appendChild(trBg);
-        });
-
-        // Adjust animation duration dynamically
-        const scrollContent = document.getElementById("scrollContent");
-        const duration = rows.length * 3; // 3 seconds per row
-        scrollContent.style.animationDuration = `${duration}s`;
-
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("footer").textContent = "Error loading data";
-        document.getElementById("heading").textContent = "Header unavailable";
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+        document.getElementById("footer").textContent = "Error loading footer";
       }
     }
 
     fetchData();
-    setInterval(fetchData, 120000); // every 2 minutes
+    setInterval(fetchData, 120000); // Refresh every 2 minutes
   </script>
 
 </body>
