@@ -102,8 +102,6 @@
       font-weight: bold;
       color: white;
     }
-
-
   </style>
 </head>
 <body>
@@ -183,7 +181,7 @@
     }
 
     function showGroup(index) {
-      if (index >= groups.length) return; // Stop after last group
+      if (index >= groups.length) return;
 
       const heading = document.getElementById("heading");
       const tableHeader = document.getElementById("tableHeader");
@@ -227,11 +225,21 @@
         const tr = document.createElement("tr");
         const trBg = document.createElement("tr");
 
-        row.forEach(cell => {
+        row.forEach((cell, colIndex) => {
           const td = document.createElement("td");
           const tdBg = document.createElement("td");
-          td.textContent = cell || '';
-          tdBg.textContent = cell || '';
+
+          let value = cell;
+
+          // Format column 2 (index 1)
+          if (colIndex === 1 && !isNaN(parseFloat(cell))) {
+            value = parseFloat(cell).toFixed(3);
+            td.style.textAlign = "right";
+            tdBg.style.textAlign = "right";
+          }
+
+          td.textContent = value || '';
+          tdBg.textContent = value || '';
 
           if (i === 3) {
             td.style.color = "red";
@@ -253,16 +261,14 @@
         bgTableBody.appendChild(trBg);
       });
 
-      // Trigger animation
       scrollContent.style.animation = "none";
       void scrollContent.offsetWidth;
       const duration = rowsCount * 3;
       scrollContent.style.animation = `scrollUp ${duration}s linear forwards`;
 
-      // Proceed to next group after animation completes
       setTimeout(() => {
         currentGroup++;
-        showGroup(currentGroup); // stop naturally after last group
+        showGroup(currentGroup);
       }, duration * 1000 + 500);
     }
 

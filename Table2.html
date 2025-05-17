@@ -2,7 +2,7 @@
 <html lang="ml">
 <head>
   <meta charset="UTF-8">
-  <title>പുഴയിലെ  ജലനിരപ്പ്  MSL</title>
+  <title>പുഴയിലെ ജലനിരപ്പ് MSL</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -45,7 +45,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height : 400px;
+      height: 400px;
       opacity: 0;
       z-index: 0;
       pointer-events: none;
@@ -106,7 +106,7 @@
 </head>
 <body>
 
-  <div class="page-header">പുഴയിലെ  ജലനിരപ്പ്  MSL</div>
+  <div class="page-header">പുഴയിലെ ജലനിരപ്പ് MSL</div>
   <div id="heading" class="scroll-heading"></div>
 
   <div class="scroll-container">
@@ -144,14 +144,14 @@
 
   <script>
     const groups = [
-     { headerRow: 199, rowsStart: 201, rowsCount: 5 },  // A70 heading, A73–A79
-      { headerRow: 209, rowsStart: 211, rowsCount: 5 },  // A90 heading, A93–A99
-      { headerRow: 219, rowsStart: 221, rowsCount: 5 }, // A110 heading, A113–A119
-      { headerRow: 229, rowsStart: 231, rowsCount: 5 }, // A130 heading, A133–A139
-      { headerRow: 239, rowsStart: 241, rowsCount: 5 }, // A150 heading, A153–A159
-      { headerRow: 249, rowsStart: 251, rowsCount: 5 }, // A170 heading, A173–A179
-      { headerRow: 259, rowsStart: 261, rowsCount: 5 },  // A190 heading, A193–A194
-      { headerRow: 269, rowsStart: 271, rowsCount: 5 }  // A190 heading, A193–A194
+      { headerRow: 199, rowsStart: 201, rowsCount: 5 },
+      { headerRow: 209, rowsStart: 211, rowsCount: 5 },
+      { headerRow: 219, rowsStart: 221, rowsCount: 5 },
+      { headerRow: 229, rowsStart: 231, rowsCount: 5 },
+      { headerRow: 239, rowsStart: 241, rowsCount: 5 },
+      { headerRow: 249, rowsStart: 251, rowsCount: 5 },
+      { headerRow: 259, rowsStart: 261, rowsCount: 5 },
+      { headerRow: 269, rowsStart: 271, rowsCount: 5 }
     ];
 
     let data = [];
@@ -182,7 +182,7 @@
     }
 
     function showGroup(index) {
-      if (index >= groups.length) return; // Stop after last group
+      if (index >= groups.length) return;
 
       const heading = document.getElementById("heading");
       const tableHeader = document.getElementById("tableHeader");
@@ -226,11 +226,21 @@
         const tr = document.createElement("tr");
         const trBg = document.createElement("tr");
 
-        row.forEach(cell => {
+        row.forEach((cell, colIndex) => {
           const td = document.createElement("td");
           const tdBg = document.createElement("td");
-          td.textContent = cell || '';
-          tdBg.textContent = cell || '';
+
+          let value = cell;
+
+          // Format column 2 (index 1) as number with 3 decimal digits
+          if (colIndex === 1 && !isNaN(parseFloat(cell))) {
+            value = parseFloat(cell).toFixed(3);
+            td.style.textAlign = "right";
+            tdBg.style.textAlign = "right";
+          }
+
+          td.textContent = value || '';
+          tdBg.textContent = value || '';
 
           if (i === 3) {
             td.style.color = "red";
@@ -252,16 +262,14 @@
         bgTableBody.appendChild(trBg);
       });
 
-      // Trigger animation
       scrollContent.style.animation = "none";
       void scrollContent.offsetWidth;
       const duration = rowsCount * 3;
       scrollContent.style.animation = `scrollUp ${duration}s linear forwards`;
 
-      // Proceed to next group after animation completes
       setTimeout(() => {
         currentGroup++;
-        showGroup(currentGroup); // stop naturally after last group
+        showGroup(currentGroup);
       }, duration * 1000 + 500);
     }
 
