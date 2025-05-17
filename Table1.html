@@ -224,6 +224,7 @@
       rows.forEach((row, i) => {
         const tr = document.createElement("tr");
         const trBg = document.createElement("tr");
+        const isLastRow = i === rows.length - 1;
 
         row.forEach((cell, colIndex) => {
           const td = document.createElement("td");
@@ -231,11 +232,14 @@
 
           let value = cell;
 
-          // Format column 2 (index 1)
           if (colIndex === 1 && !isNaN(parseFloat(cell))) {
             value = parseFloat(cell).toFixed(3);
             td.style.textAlign = "right";
             tdBg.style.textAlign = "right";
+          }
+
+          if ((i === 6) && colIndex === 1 && !isNaN(parseFloat(cell))) {
+            value = parseFloat(cell).toFixed(2);
           }
 
           td.textContent = value || '';
@@ -251,6 +255,16 @@
             td.style.fontWeight = "bold";
             tdBg.style.color = "blue";
             tdBg.style.fontWeight = "bold";
+          }
+
+          if (i === 6) {
+            td.style.fontSize = "24px";
+            tdBg.style.fontSize = "24px";
+            td.style.color = "green";
+            td.style.fontWeight = "bold";
+            tdBg.style.color = "green";
+            tdBg.style.fontWeight = "bold";
+
           }
 
           tr.appendChild(td);
