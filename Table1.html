@@ -352,17 +352,20 @@ function renderChart(rows) {
         }
       },
       plugins: {
-        legend: {
-          display: true,
-          position: 'top',
-          labels: {
-            boxWidth: 15,
-            boxHeight: 2,
-            font: { size: 12 }
-          }
-        },
-        tooltip: { enabled: false }
-      },
+  legend: {
+    display: true,
+    position: 'top',
+    labels: {
+      boxWidth: 15,
+      boxHeight: 2,
+      font: {
+        size: 14,
+        weight: 'bold'  // <-- Add this line to make legend font bold
+      }
+    }
+  },
+  tooltip: { enabled: false }
+},
       animation: { duration: 500 },
       responsive: true
     },
