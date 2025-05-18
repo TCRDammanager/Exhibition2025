@@ -1,8 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ml">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>പുഴയിലെ ജലനിരപ്പ് MSL</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -102,6 +103,12 @@
       font-weight: bold;
       color: white;
     }
+
+    /* Chart container style */
+    #chartContainer {
+      width: 420px;
+      margin: 10px auto;
+    }
   </style>
 </head>
 <body>
@@ -119,9 +126,9 @@
 
     <table>
       <colgroup>
-        <col style="width: 100%;">
-        <col style="width: 0%;">
-        <col style="width: 0%;">
+        <col style="width: 100%;" />
+        <col style="width: 0%;" />
+        <col style="width: 0%;" />
       </colgroup>
       <thead id="tableHeader"></thead>
     </table>
@@ -130,14 +137,19 @@
       <div id="scrollContent" class="scrolling-body">
         <table>
           <colgroup>
-            <col style="width: 100%;">
-            <col style="width: 5%;">
-            <col style="width: 5%;">
+            <col style="width: 100%;" />
+            <col style="width: 5%;" />
+            <col style="width: 5%;" />
           </colgroup>
           <tbody id="tableBody"></tbody>
         </table>
       </div>
     </div>
+  </div>
+
+  <!-- Detached chart container -->
+  <div id="chartContainer">
+    <canvas id="chart2"></canvas>
   </div>
 
   <div id="footer" class="scroll-footer">Date</div>
@@ -156,6 +168,7 @@
 
     let data = [];
     let currentGroup = 0;
+    let chart;
 
     async function fetchData() {
       const url = "https://script.google.com/macros/s/AKfycbwAVdup8vA9azugUebxVy9YQ2BPde9LHodACwcWMYCAkklETpzQ_nIIEui9jBtAgFS3zQ/exec";
@@ -222,6 +235,9 @@
       tableBody.innerHTML = "";
       bgTableBody.innerHTML = "";
 
+      const xLabels = [];
+      const yValues = [];
+
       rows.forEach((row, i) => {
         const tr = document.createElement("tr");
         const trBg = document.createElement("tr");
@@ -232,7 +248,6 @@
 
           let value = cell;
 
-          // Format column 2 (index 1) as number with 3 decimal digits
           if (colIndex === 1 && !isNaN(parseFloat(cell))) {
             value = parseFloat(cell).toFixed(3);
             td.style.textAlign = "right";
@@ -258,9 +273,14 @@
           trBg.appendChild(tdBg);
         });
 
+        xLabels.push(row[0] || '');
+        yValues.push(parseFloat(row[1]) || 0);
+
         tableBody.appendChild(tr);
         bgTableBody.appendChild(trBg);
       });
+
+      drawChart(xLabels, yValues, yValues[0]);
 
       scrollContent.style.animation = "none";
       void scrollContent.offsetWidth;
@@ -271,6 +291,82 @@
         currentGroup++;
         showGroup(currentGroup);
       }, duration * 1000 + 500);
+    }
+
+    function drawChart(labels, values, baseValue) {
+      const ctx = document.getElementById("chart2").getContext("2d");
+
+      if (chart) chart.destroy();
+
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Z G L',
+            data: Array(values.length).fill(values[0]),
+            borderColor: 'Green',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          }, {
+            label: 'H F L',
+            data: Array(values.length).fill(values[1]),
+            borderColor: 'Red',
+            borderWidth: 3,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          }, {
+            label: 'Danger',
+            data: Array(values.length).fill(values[2]),
+            borderColor: 'orange',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          }, {
+            label: 'Warning',
+            data: Array(values.length).fill(values[3]),
+            borderColor: 'Yellow',
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          }, {
+            label: 'Today GL',
+            data: Array(values.length).fill(values[4]),
+            borderColor: 'Blue',
+            borderWidth: 10,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          }]
+        },
+options: {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+      labels: {
+        boxWidth: 10,  // Adjust the width of the legend color box
+        boxHeight: 1, // Optional: adjust height if needed (default is usually 12)
+        font: {
+          size: 12     // Optional: adjust font size
+        }
+      }
+    }
+  },
+  scales: {
+    x: { display: false },
+    y: {
+      beginAtZero: false,
+      min: Math.floor(baseValue) - 1
+    }
+  }
+}
+      });
     }
 
     fetchData();

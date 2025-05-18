@@ -1,7 +1,7 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="ml">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>റിസർവോയർ ജലവിതാനം MSL</title>
   <style>
     body {
@@ -30,35 +30,37 @@
 
     .scroll-container {
       width: 420px;
+      height: 500px;
       margin: 0 auto;
       border: 1px solid #ccc;
-      background: rgba(255, 255, 255, 0.9);
       box-sizing: border-box;
       font-size: 20px;
       font-weight: bold;
       position: relative;
-      overflow: hidden;
+      background: transparent;
     }
 
-    .background-table {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height : 400px;
-      opacity: 0;
-      z-index: 0;
-      pointer-events: none;
-      filter: blur(0.5px);
+    .table-area {
+      display: flex;
+      flex-direction: column;
+      height: 70%; /* reduced from 100% */
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.85);
+      overflow: hidden;
     }
 
     table {
       border-collapse: collapse;
       width: 100%;
+      background: white;
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
     }
 
     thead th {
-      background-color: #e0e0e0;
+      background-color: rgba(224, 224, 224, 0.9);
       border: 0px solid #999;
       padding: 6px;
       text-align: center;
@@ -69,11 +71,11 @@
       border: 1px solid #999;
       padding: 5px;
       text-align: left;
-      background-color: white;
+      background-color: transparent;
     }
 
     .table-wrapper {
-      height: 450px;
+      flex-grow: 1;
       overflow: hidden;
       position: relative;
       z-index: 1;
@@ -83,15 +85,12 @@
       display: inline-block;
       transform: translateY(100%);
       animation: scrollUp 30s linear forwards;
+      width: 100%;
     }
 
     @keyframes scrollUp {
-      0% {
-        transform: translateY(100%);
-      }
-      100% {
-        transform: translateY(-100%);
-      }
+      0% { transform: translateY(100%); }
+      100% { transform: translateY(-100%); }
     }
 
     .scroll-footer {
@@ -102,6 +101,24 @@
       font-weight: bold;
       color: white;
     }
+
+    .chart-area-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 30%; /* adjusts height for visibility */
+      background: White;
+      border-top: 1px solid #ccc;
+      z-index: 0;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 90% !important;
+      border-top: 1px solid #ccc;
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -110,38 +127,38 @@
   <div id="heading" class="scroll-heading"></div>
 
   <div class="scroll-container">
-    <div class="background-table">
+    <div class="table-area">
       <table>
-        <thead id="bgTableHeader"></thead>
-        <tbody id="bgTableBody"></tbody>
+        <colgroup>
+          <col style="width: 80%;">
+          <col style="width: 20%;">
+          <col style="width: 20%;">
+        </colgroup>
+        <thead id="tableHeader"></thead>
       </table>
+
+      <div class="table-wrapper">
+        <div id="scrollContent" class="scrolling-body">
+          <table>
+            <colgroup>
+              <col style="width: 100%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+            </colgroup>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <table>
-      <colgroup>
-        <col style="width: 80%;">
-        <col style="width: 20%;">
-        <col style="width: 20%;">
-      </colgroup>
-      <thead id="tableHeader"></thead>
-    </table>
-
-    <div class="table-wrapper">
-      <div id="scrollContent" class="scrolling-body">
-        <table>
-          <colgroup>
-            <col style="width: 100%;">
-            <col style="width: 5%;">
-            <col style="width: 5%;">
-          </colgroup>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+    <div class="chart-area-bottom">
+      <canvas id="barChart2"></canvas>
     </div>
   </div>
 
   <div id="footer" class="scroll-footer">Date</div>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     const groups = [
       { headerRow: 69, rowsStart: 72, rowsCount: 7 },
@@ -164,7 +181,7 @@
         data = jsonData.value || [];
 
         const footer = document.getElementById("footer");
-        const a1Value = data[0][0];
+        const a1Value = data[0]?.[0];
         const date = new Date(a1Value);
         footer.textContent = !isNaN(date)
           ? String(date.getDate()).padStart(2, '0') + '/' +
@@ -186,8 +203,6 @@
       const heading = document.getElementById("heading");
       const tableHeader = document.getElementById("tableHeader");
       const tableBody = document.getElementById("tableBody");
-      const bgTableHeader = document.getElementById("bgTableHeader");
-      const bgTableBody = document.getElementById("bgTableBody");
       const scrollContent = document.getElementById("scrollContent");
 
       const group = groups[index];
@@ -199,80 +214,53 @@
 
       const headerRow = data[headerRowIndex + 1] || [];
       tableHeader.innerHTML = "";
-      bgTableHeader.innerHTML = "";
 
       const trHeader = document.createElement("tr");
-      const trHeaderBg = document.createElement("tr");
-
       headerRow.forEach(cell => {
         const th = document.createElement("th");
         th.textContent = cell || '';
         trHeader.appendChild(th);
-
-        const thBg = document.createElement("th");
-        thBg.textContent = cell || '';
-        trHeaderBg.appendChild(thBg);
       });
-
       tableHeader.appendChild(trHeader);
-      bgTableHeader.appendChild(trHeaderBg);
 
       const rows = data.slice(rowsStart, rowsStart + rowsCount);
       tableBody.innerHTML = "";
-      bgTableBody.innerHTML = "";
 
       rows.forEach((row, i) => {
         const tr = document.createElement("tr");
-        const trBg = document.createElement("tr");
-        const isLastRow = i === rows.length - 1;
 
         row.forEach((cell, colIndex) => {
           const td = document.createElement("td");
-          const tdBg = document.createElement("td");
-
           let value = cell;
 
           if (colIndex === 1 && !isNaN(parseFloat(cell))) {
             value = parseFloat(cell).toFixed(3);
             td.style.textAlign = "right";
-            tdBg.style.textAlign = "right";
           }
-
           if ((i === 6) && colIndex === 1 && !isNaN(parseFloat(cell))) {
             value = parseFloat(cell).toFixed(2);
           }
 
           td.textContent = value || '';
-          tdBg.textContent = value || '';
 
           if (i === 3) {
             td.style.color = "red";
             td.style.fontWeight = "bold";
-            tdBg.style.color = "red";
-            tdBg.style.fontWeight = "bold";
           } else if (i === 4) {
             td.style.color = "blue";
             td.style.fontWeight = "bold";
-            tdBg.style.color = "blue";
-            tdBg.style.fontWeight = "bold";
           }
 
           if (i === 6) {
             td.style.fontSize = "24px";
-            tdBg.style.fontSize = "24px";
             td.style.color = "green";
             td.style.fontWeight = "bold";
-            tdBg.style.color = "green";
-            tdBg.style.fontWeight = "bold";
-
           }
 
           tr.appendChild(td);
-          trBg.appendChild(tdBg);
         });
 
         tableBody.appendChild(tr);
-        bgTableBody.appendChild(trBg);
       });
 
       scrollContent.style.animation = "none";
@@ -280,14 +268,103 @@
       const duration = rowsCount * 3;
       scrollContent.style.animation = `scrollUp ${duration}s linear forwards`;
 
+      renderChart(rows);
+
       setTimeout(() => {
         currentGroup++;
         showGroup(currentGroup);
       }, duration * 1000 + 500);
     }
 
+    let myBarChart2 = null;
+
+    function renderChart(rows) {
+      const labelsTop = rows.map(r => r[0] || '');
+      const extendedLabels = ['', ...labelsTop, '']; // Extend labels for line datasets
+
+      const datasets = [];
+
+      const addLine = (i, color, label) => {
+        if (rows[i]) {
+          const val = parseFloat(rows[i][1]) || 0;
+          // Extend line data by adding extra points at start and end
+          const extendedData = [val, ...labelsTop.map(() => val), val];
+          datasets.push({
+            label,
+            type: 'line',
+            data: extendedData,
+            borderColor: color,
+            borderWidth: 2,
+            fill: false,
+            pointRadius: 0,
+            tension: 0
+          });
+        }
+      };
+
+      const addBar = (i, color, label) => {
+        if (rows[i]) {
+          const val = parseFloat(rows[i][1]) || 0;
+          datasets.push({
+            label,
+            type: 'bar',
+            data: labelsTop.map((_, idx) => idx === i ? val : 0),
+            backgroundColor: color,
+            borderWidth: 1,
+            barThickness: 1000
+          });
+        }
+      };
+
+      addLine(0, '#AF0A0B', 'M W L');
+      addLine(1, '#34A009', 'F R L');
+      addLine(3, '#FE9900', 'Warning');
+      addBar(4, 'blue', 'Today Level');
+
+      const ctx2 = document.getElementById('barChart2').getContext('2d');
+      if (myBarChart2) myBarChart2.destroy();
+
+      myBarChart2 = new Chart(ctx2, {
+        data: {
+          labels: extendedLabels,
+          datasets: datasets
+        },
+        options: {
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              ticks: { display: false },
+              grid: { display: false },
+              barPercentage: 1,
+              categoryPercentage: 1,
+              offset: false,
+            },
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#333' },
+              grid: { borderDash: [4, 4] }
+            }
+          },
+          plugins: {
+  legend: {
+    display: true,
+    position: 'top',
+    labels: {
+      boxWidth: 15,      // width of legend box
+      boxHeight: 2,      // ← set box height to 2
+      font: { size: 12 } // optional: font size
+    }
+  },
+  tooltip: { enabled: false }
+},
+          animation: { duration: 500 },
+          responsive: true
+        },
+        type: 'bar'
+      });
+    }
+
     fetchData();
   </script>
-
 </body>
 </html>
