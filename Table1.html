@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="ml">
 <head>
   <meta charset="UTF-8" />
@@ -33,7 +33,6 @@
       height: 500px;
       margin: 0 auto;
       border: 1px solid #ccc;
-      box-sizing: border-box;
       font-size: 20px;
       font-weight: bold;
       position: relative;
@@ -43,7 +42,7 @@
     .table-area {
       display: flex;
       flex-direction: column;
-      height: 70%; /* reduced from 100% */
+      height: 70%;
       position: relative;
       z-index: 1;
       background: rgba(255, 255, 255, 0.85);
@@ -107,8 +106,8 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 30%; /* adjusts height for visibility */
-      background: White;
+      height: 30%;
+      background: white;
       border-top: 1px solid #ccc;
       z-index: 0;
     }
@@ -123,248 +122,255 @@
 </head>
 <body>
 
-  <div class="page-header">റിസർവോയർ ജലവിതാനം MSL</div>
-  <div id="heading" class="scroll-heading"></div>
+<div class="page-header">റിസർവോയർ ജലവിതാനം MSL</div>
+<div id="heading" class="scroll-heading"></div>
 
-  <div class="scroll-container">
-    <div class="table-area">
-      <table>
-        <colgroup>
-          <col style="width: 80%;">
-          <col style="width: 20%;">
-          <col style="width: 20%;">
-        </colgroup>
-        <thead id="tableHeader"></thead>
-      </table>
+<div class="scroll-container">
+  <div class="table-area">
+    <table>
+      <colgroup>
+        <col style="width: 80%;">
+        <col style="width: 20%;">
+        <col style="width: 20%;">
+      </colgroup>
+      <thead id="tableHeader"></thead>
+    </table>
 
-      <div class="table-wrapper">
-        <div id="scrollContent" class="scrolling-body">
-          <table>
-            <colgroup>
-              <col style="width: 100%;">
-              <col style="width: 5%;">
-              <col style="width: 5%;">
-            </colgroup>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
+    <div class="table-wrapper">
+      <div id="scrollContent" class="scrolling-body">
+        <table>
+          <colgroup>
+            <col style="width: 100%;">
+            <col style="width: 5%;">
+            <col style="width: 5%;">
+          </colgroup>
+          <tbody id="tableBody"></tbody>
+        </table>
       </div>
-    </div>
-
-    <div class="chart-area-bottom">
-      <canvas id="barChart2"></canvas>
     </div>
   </div>
 
-  <div id="footer" class="scroll-footer">Date</div>
+  <div class="chart-area-bottom">
+    <canvas id="barChart2"></canvas>
+  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-    const groups = [
-      { headerRow: 69, rowsStart: 72, rowsCount: 7 },
-      { headerRow: 89, rowsStart: 92, rowsCount: 7 },
-      { headerRow: 109, rowsStart: 112, rowsCount: 7 },
-      { headerRow: 129, rowsStart: 132, rowsCount: 7 },
-      { headerRow: 149, rowsStart: 152, rowsCount: 7 },
-      { headerRow: 169, rowsStart: 172, rowsCount: 7 },
-      { headerRow: 189, rowsStart: 192, rowsCount: 2 }
-    ];
+<div id="footer" class="scroll-footer">Date</div>
 
-    let data = [];
-    let currentGroup = 0;
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const groups = [
+  { headerRow: 69, rowsStart: 72, rowsCount: 8 },
+  { headerRow: 89, rowsStart: 92, rowsCount: 8 },
+  { headerRow: 109, rowsStart: 112, rowsCount: 8 },
+  { headerRow: 129, rowsStart: 132, rowsCount: 8 },
+  { headerRow: 149, rowsStart: 152, rowsCount: 8 },
+  { headerRow: 169, rowsStart: 172, rowsCount: 8 },
+  { headerRow: 189, rowsStart: 192, rowsCount: 2 }
+];
 
-    async function fetchData() {
-      const url = "https://script.google.com/macros/s/AKfycbwAVdup8vA9azugUebxVy9YQ2BPde9LHodACwcWMYCAkklETpzQ_nIIEui9jBtAgFS3zQ/exec";
-      try {
-        const response = await fetch(url);
-        const jsonData = await response.json();
-        data = jsonData.value || [];
+let data = [];
+let currentGroup = 0;
 
-        const footer = document.getElementById("footer");
-        const a1Value = data[0]?.[0];
-        const date = new Date(a1Value);
-        footer.textContent = !isNaN(date)
-          ? String(date.getDate()).padStart(2, '0') + '/' +
-            String(date.getMonth() + 1).padStart(2, '0') + '/' +
-            date.getFullYear()
-          : a1Value || "Invalid Date";
+async function fetchData() {
+  const url = "https://script.google.com/macros/s/AKfycbwAVdup8vA9azugUebxVy9YQ2BPde9LHodACwcWMYCAkklETpzQ_nIIEui9jBtAgFS3zQ/exec";
+  try {
+    const response = await fetch(url);
+    const jsonData = await response.json();
+    data = jsonData.value || [];
 
-        showGroup(currentGroup);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("footer").textContent = "Error loading data";
-        document.getElementById("heading").textContent = "Header unavailable";
+    const footer = document.getElementById("footer");
+    const a1Value = data[0]?.[0];
+    const date = new Date(a1Value);
+    footer.textContent = !isNaN(date)
+      ? String(date.getDate()).padStart(2, '0') + '/' +
+        String(date.getMonth() + 1).padStart(2, '0') + '/' +
+        date.getFullYear()
+      : a1Value || "Invalid Date";
+
+    showGroup(currentGroup);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    document.getElementById("footer").textContent = "Error loading data";
+    document.getElementById("heading").textContent = "Header unavailable";
+  }
+}
+
+function showGroup(index) {
+  if (index >= groups.length) return;
+
+  const heading = document.getElementById("heading");
+  const tableHeader = document.getElementById("tableHeader");
+  const tableBody = document.getElementById("tableBody");
+  const scrollContent = document.getElementById("scrollContent");
+
+  const group = groups[index];
+  const headerRowIndex = group.headerRow;
+  const rowsStart = group.rowsStart;
+  const rowsCount = group.rowsCount;
+
+  heading.textContent = data[headerRowIndex]?.[0] || "Header unavailable";
+
+  const headerRow = data[headerRowIndex + 1] || [];
+  tableHeader.innerHTML = "";
+
+  const trHeader = document.createElement("tr");
+  headerRow.forEach(cell => {
+    const th = document.createElement("th");
+    th.textContent = cell || '';
+    trHeader.appendChild(th);
+  });
+  tableHeader.appendChild(trHeader);
+
+  const rows = data.slice(rowsStart, rowsStart + rowsCount);
+  const limitedRows = rows.slice(0, 8);
+
+  tableBody.innerHTML = "";
+
+  limitedRows.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    row.forEach((cell, colIndex) => {
+      const td = document.createElement("td");
+      let value = cell;
+   if (i === 7) {
+      tr.style.height = "0px";
+      tr.style.overflow = "hidden";  // optional, helps hide content
+     tr.style.display = "none";     // alternatively, completely hide it
+   }
+
+
+      if (colIndex === 1 && !isNaN(parseFloat(cell))) {
+        value = parseFloat(cell).toFixed(3);
+        td.style.textAlign = "right";
       }
-    }
+      if (i === 6 && colIndex === 1 && !isNaN(parseFloat(cell))) {
+        value = parseFloat(cell).toFixed(2);
+      }
 
-    function showGroup(index) {
-      if (index >= groups.length) return;
+      td.textContent = value || '';
 
-      const heading = document.getElementById("heading");
-      const tableHeader = document.getElementById("tableHeader");
-      const tableBody = document.getElementById("tableBody");
-      const scrollContent = document.getElementById("scrollContent");
+      if (i === 3) {
+        td.style.color = "red";
+        td.style.fontWeight = "bold";
+      } else if (i === 4) {
+        td.style.color = "blue";
+        td.style.fontWeight = "bold";
+      }
 
-      const group = groups[index];
-      const headerRowIndex = group.headerRow;
-      const rowsStart = group.rowsStart;
-      const rowsCount = group.rowsCount;
+      if (i === 6) {
+        td.style.fontSize = "24px";
+        td.style.color = "green";
+        td.style.fontWeight = "bold";
+      }
 
-      heading.textContent = data[headerRowIndex]?.[0] || "Header unavailable";
+      tr.appendChild(td);
+    });
+    tableBody.appendChild(tr);
+  });
 
-      const headerRow = data[headerRowIndex + 1] || [];
-      tableHeader.innerHTML = "";
+  scrollContent.style.animation = "none";
+  void scrollContent.offsetWidth;
+  const duration = limitedRows.length * 3;
+  scrollContent.style.animation = `scrollUp ${duration}s linear forwards`;
 
-      const trHeader = document.createElement("tr");
-      headerRow.forEach(cell => {
-        const th = document.createElement("th");
-        th.textContent = cell || '';
-        trHeader.appendChild(th);
+  renderChart(limitedRows);
+
+  setTimeout(() => {
+    currentGroup++;
+    showGroup(currentGroup);
+  }, duration * 1000 + 500);
+}
+
+let myBarChart2 = null;
+
+function renderChart(rows) {
+  const labelsTop = rows.map(r => r[0] || '');
+  const extendedLabels = ['', ...labelsTop, ''];
+
+  const datasets = [];
+
+  const addLine = (i, color, label) => {
+    if (rows[i]) {
+      const val = parseFloat(rows[i][1]) || 0;
+      const extendedData = [val, ...labelsTop.map(() => val), val];
+      datasets.push({
+        label,
+        type: 'line',
+        data: extendedData,
+        borderColor: color,
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 0,
+        tension: 0
       });
-      tableHeader.appendChild(trHeader);
-
-      const rows = data.slice(rowsStart, rowsStart + rowsCount);
-      tableBody.innerHTML = "";
-
-      rows.forEach((row, i) => {
-        const tr = document.createElement("tr");
-
-        row.forEach((cell, colIndex) => {
-          const td = document.createElement("td");
-          let value = cell;
-
-          if (colIndex === 1 && !isNaN(parseFloat(cell))) {
-            value = parseFloat(cell).toFixed(3);
-            td.style.textAlign = "right";
-          }
-          if ((i === 6) && colIndex === 1 && !isNaN(parseFloat(cell))) {
-            value = parseFloat(cell).toFixed(2);
-          }
-
-          td.textContent = value || '';
-
-          if (i === 3) {
-            td.style.color = "red";
-            td.style.fontWeight = "bold";
-          } else if (i === 4) {
-            td.style.color = "blue";
-            td.style.fontWeight = "bold";
-          }
-
-          if (i === 6) {
-            td.style.fontSize = "24px";
-            td.style.color = "green";
-            td.style.fontWeight = "bold";
-          }
-
-          tr.appendChild(td);
-        });
-
-        tableBody.appendChild(tr);
-      });
-
-      scrollContent.style.animation = "none";
-      void scrollContent.offsetWidth;
-      const duration = rowsCount * 3;
-      scrollContent.style.animation = `scrollUp ${duration}s linear forwards`;
-
-      renderChart(rows);
-
-      setTimeout(() => {
-        currentGroup++;
-        showGroup(currentGroup);
-      }, duration * 1000 + 500);
     }
+  };
 
-    let myBarChart2 = null;
+  const addBar = (i, color, label) => {
+    if (rows[i]) {
+      const val = parseFloat(rows[i][1]) || 0;
+      datasets.push({
+        label,
+        type: 'bar',
+        data: labelsTop.map((_, idx) => idx === i ? val : 0),
+        backgroundColor: color,
+        borderWidth: 1,
+        barThickness: 1000
+      });
+    }
+  };
 
-    function renderChart(rows) {
-      const labelsTop = rows.map(r => r[0] || '');
-      const extendedLabels = ['', ...labelsTop, '']; // Extend labels for line datasets
+  addLine(0, '#AF0A0B', 'M W L');
+  addLine(1, '#34A009', 'F R L');
+  addLine(3, '#FE9900', 'Warning');
+  addBar(4, 'blue', 'Today Level');
 
-      const datasets = [];
+  const ctx2 = document.getElementById('barChart2').getContext('2d');
+  if (myBarChart2) myBarChart2.destroy();
 
-      const addLine = (i, color, label) => {
-        if (rows[i]) {
-          const val = parseFloat(rows[i][1]) || 0;
-          // Extend line data by adding extra points at start and end
-          const extendedData = [val, ...labelsTop.map(() => val), val];
-          datasets.push({
-            label,
-            type: 'line',
-            data: extendedData,
-            borderColor: color,
-            borderWidth: 2,
-            fill: false,
-            pointRadius: 0,
-            tension: 0
-          });
-        }
-      };
+  const minY = parseFloat(rows[7]?.[1]) || 0;
 
-      const addBar = (i, color, label) => {
-        if (rows[i]) {
-          const val = parseFloat(rows[i][1]) || 0;
-          datasets.push({
-            label,
-            type: 'bar',
-            data: labelsTop.map((_, idx) => idx === i ? val : 0),
-            backgroundColor: color,
-            borderWidth: 1,
-            barThickness: 1000
-          });
-        }
-      };
-
-      addLine(0, '#AF0A0B', 'M W L');
-      addLine(1, '#34A009', 'F R L');
-      addLine(3, '#FE9900', 'Warning');
-      addBar(4, 'blue', 'Today Level');
-
-      const ctx2 = document.getElementById('barChart2').getContext('2d');
-      if (myBarChart2) myBarChart2.destroy();
-
-      myBarChart2 = new Chart(ctx2, {
-        data: {
-          labels: extendedLabels,
-          datasets: datasets
+  myBarChart2 = new Chart(ctx2, {
+    data: {
+      labels: extendedLabels,
+      datasets: datasets
+    },
+    options: {
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          ticks: { display: false },
+          grid: { display: false },
+          barPercentage: 1,
+          categoryPercentage: 1,
+          offset: false
         },
-        options: {
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              ticks: { display: false },
-              grid: { display: false },
-              barPercentage: 1,
-              categoryPercentage: 1,
-              offset: false,
-            },
-            y: {
-              beginAtZero: true,
-              ticks: { color: '#333' },
-              grid: { borderDash: [4, 4] }
-            }
-          },
-          plugins: {
-  legend: {
-    display: true,
-    position: 'top',
-    labels: {
-      boxWidth: 15,      // width of legend box
-      boxHeight: 2,      // ← set box height to 2
-      font: { size: 12 } // optional: font size
-    }
-  },
-  tooltip: { enabled: false }
-},
-          animation: { duration: 500 },
-          responsive: true
+        y: {
+          min: minY,
+          ticks: { color: '#333' },
+          grid: { borderDash: [4, 4] }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: {
+            boxWidth: 15,
+            boxHeight: 2,
+            font: { size: 12 }
+          }
         },
-        type: 'bar'
-      });
-    }
+        tooltip: { enabled: false }
+      },
+      animation: { duration: 500 },
+      responsive: true
+    },
+    type: 'bar'
+  });
+}
 
-    fetchData();
-  </script>
+fetchData();
+</script>
 </body>
 </html>
